@@ -796,7 +796,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;grade&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Cinematic&quot;,&quot;Documentary&quot;,&quot;Archive&quot;],&quot;default&quot;:&quot;Cinematic&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;sunPosition&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:-1,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;orbitDrift&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;default&quot;:0.3,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
 const DEG = Math.PI / 180;
 const CITIES = [
   { id:'madrid', idx:'2.1', name:'Madrid', country:'España', years:'2001–03 · 2020–21', lat:40.4, lon:-3.7, hero:true, x:44, y:38,
@@ -940,8 +940,28 @@ class Component extends DCLogic {
   bindFlash = (el) => { this.flashEl = el; };
   bindMapWrap = (el) => { this.mapWrapEl = el; };
 
+  GRADES = {
+    Cinematic:   { filter:'contrast(1.06) saturate(.96) brightness(1.0)', vignette:1 },
+    Documentary: { filter:'contrast(1.0) saturate(1.04) brightness(1.06)', vignette:.45 },
+    Archive:     { filter:'contrast(.92) saturate(.74) sepia(.16) brightness(.97)', vignette:1 }
+  };
+
+  applyLook = () => {
+    const g = this.GRADES[this.props.grade] || this.GRADES.Cinematic;
+    if (this.canvasEl) this.canvasEl.style.filter = g.filter;
+    if (this.visorEl) {
+      const layers = this.visorEl.querySelectorAll(':scope > div');
+      layers.forEach(el => { el.style.opacity = String(Math.min(1, g.vignette)); });
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps && prevProps.grade !== this.props.grade) this.applyLook();
+  }
+
   componentDidMount() {
     this.isMobile = window.innerWidth <= 600;
+    requestAnimationFrame(this.applyLook);
     this._assetMap = {};
     document.querySelectorAll('[data-asset-key]').forEach(img => { this._assetMap[img.getAttribute('data-asset-key')] = img.currentSrc || img.src; });
     this._menuTimer = setTimeout(() => { if (this.state.phase==='menu') this.setState({ menuStage:'combo' }); }, 1000);
@@ -1114,11 +1134,14 @@ class Component extends DCLogic {
       this._raf = requestAnimationFrame(loop);
       try {
         this.sunT += 0.0016;
-        this.sunDir.set(0.42, 0.26 + 0.04*Math.sin(this.sunT), 0.9).normalize();
+        const sunP = (this.props.sunPosition ?? 0) * 1.35;
+        const bx = 0.42, bz = 0.9, cs = Math.cos(sunP), sn = Math.sin(sunP);
+        this.sunDir.set(bx*cs + bz*sn, 0.26 + 0.04*Math.sin(this.sunT), bz*cs - bx*sn).normalize();
         if (this.earthGroup && this.state.phase==='orbit') {
           if (!this.dragState) {
             this.spinVel *= 0.94;
             if (Math.abs(this.spinVel) > 0.00002) this.rotTargetY += this.spinVel;
+            this.rotTargetY += 0.00055 * (this.props.orbitDrift ?? 0.3);
           }
           this.earthGroup.rotation.y += (this.rotTargetY - this.earthGroup.rotation.y) * 0.16;
           this.earthGroup.rotation.x += (this.rotTargetX - this.earthGroup.rotation.x) * 0.16;
