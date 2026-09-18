@@ -465,6 +465,9 @@
       <!-- HERO -->
       <div style="position:relative;height:min(76vh,760px);background:#e3ded4;overflow:hidden;display:flex;align-items:flex-end">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#8A8378">Hero image · {{ activeCity.name }}, horizontal</div>
+        <sc-if value="{{ postHero }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ heroStyle }}" role="img"></div>
+        </sc-if>
         <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,10,7,.72),transparent 55%)"></div>
         <div style="position:relative;z-index:2;padding:clamp(28px,5vw,60px);max-width:1000px">
           <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:rgba(244,241,234,.8)">{{ activeCity.postReadout }}</div>
@@ -566,7 +569,57 @@
       </article>
       </sc-if>
 
-      <sc-if value="{{ isOtherPost }}" hint-placeholder-val="{{ false }}">
+      <sc-for list="{{ postBlocks }}" as="b" hint-placeholder-count="0">
+        <sc-if value="{{ b.isHead }}" hint-placeholder-val="{{ false }}">
+          <section style="max-width:720px;margin:0 auto;padding:clamp(34px,5vw,56px) clamp(24px,5vw,40px) 0">
+            <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px">
+              <span style="font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.18em;color:#C63D21">{{ b.idx }}</span>
+              <h2 style="font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,3.4vw,36px);color:#171513;margin:0;text-wrap:balance">{{ b.title }}</h2>
+            </div>
+            <sc-if value="{{ b.place }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8A8378;margin:-8px 0 18px">{{ b.place }}</div>
+            </sc-if>
+          </section>
+        </sc-if>
+        <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ false }}">
+          <section style="max-width:720px;margin:0 auto;padding:0 clamp(24px,5vw,40px)">
+            <p style="font-size:18px;line-height:1.75;color:#2a2724;margin:0 0 22px;text-wrap:pretty">{{ b.text }}</p>
+          </section>
+        </sc-if>
+        <sc-if value="{{ b.isWide }}" hint-placeholder-val="{{ false }}">
+          <figure style="margin:14px auto 8px;max-width:1100px;padding:0 clamp(16px,4vw,40px)">
+            <img src="{{ b.src }}" alt="" loading="lazy" decoding="async" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover">
+            <figcaption style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A8378;margin-top:10px">{{ b.caption }}</figcaption>
+          </figure>
+        </sc-if>
+        <sc-if value="{{ b.isPair }}" hint-placeholder-val="{{ false }}">
+          <div style="max-width:1100px;margin:14px auto 8px;padding:0 clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+            <figure style="margin:0">
+              <img src="{{ b.src }}" alt="" loading="lazy" decoding="async" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover">
+              <figcaption style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A8378;margin-top:10px">{{ b.caption }}</figcaption>
+            </figure>
+            <figure style="margin:0">
+              <img src="{{ b.src2 }}" alt="" loading="lazy" decoding="async" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover">
+              <figcaption style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A8378;margin-top:10px">{{ b.caption2 }}</figcaption>
+            </figure>
+          </div>
+        </sc-if>
+        <sc-if value="{{ b.isQuote }}" hint-placeholder-val="{{ false }}">
+          <section style="max-width:820px;margin:0 auto;padding:clamp(38px,6vw,68px) clamp(24px,5vw,40px)">
+            <blockquote style="margin:0;border-left:3px solid #C63D21;padding-left:26px">
+              <p style="font-family:'Fraunces',serif;font-weight:600;font-size:clamp(24px,3.4vw,38px);line-height:1.2;color:#171513;margin:0">{{ b.text }}</p>
+            </blockquote>
+          </section>
+        </sc-if>
+        <sc-if value="{{ b.isOutro }}" hint-placeholder-val="{{ false }}">
+          <article style="max-width:720px;margin:0 auto;padding:clamp(34px,5vw,60px) clamp(24px,5vw,40px)">
+            <p style="font-size:18px;line-height:1.75;color:#2a2724;margin:0 0 22px;text-wrap:pretty">{{ b.text }}</p>
+            <p style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#6b655c;margin:0">{{ b.aside }}</p>
+          </article>
+        </sc-if>
+      </sc-for>
+
+      <sc-if value="{{ isStubPost }}" hint-placeholder-val="{{ false }}">
       <figure style="margin:14px auto 8px;max-width:1100px;padding:0 clamp(16px,4vw,40px)">
         <div style="aspect-ratio:16/9;background:#e3ded4;border:.5px solid rgba(138,131,120,.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#8A8378">Image · {{ activeCity.name }}, wide</div>
       </figure>
@@ -897,8 +950,54 @@ const CITIES = [
     postKicker:'Field note', postReadout:'Napa, USA',
     postTitle:'Napa', postDek:'More photos and stories coming soon.' },
   { id:'parma', idx:'—', name:'Parma', country:'Italy', lat:44.80, lon:10.33, type:'post',
-    postKicker:'Field note', postReadout:'Parma, Italy',
-    postTitle:'Parma', postDek:'More photos and stories coming soon.' },
+    postKicker:'Field note', postDate:'September 2024', postReadout:'Parma, Italy',
+    postTitle:'Emilia, and the Long Way Home',
+    postHero:'assets/parma-dusk.webp',
+    postDek:'A gathering of Marriott chefs, based in Parma, spilling out across the north of Italy. Ten days of cellars, cheese rooms, coffee roasters and vermouth, then a few more on my own with a bicycle by the lake. Work trips are rarely this generous.',
+    blocks:[
+      { t:'head', idx:'01 /', title:'Parma, the base', place:'Emilia-Romagna' },
+      { t:'text', text:'We came in from everywhere. Chefs from properties across the region and beyond, in one place for a week, which almost never happens in this business. The point was not a conference room. The point was to get into the cellars and the cheese rooms and the factories and see where the things we cook with actually come from.' },
+      { t:'text', text:'Parma itself is small and unbothered by that. You walk ten minutes and you are out of it. In the evenings we ate late, standing up as often as sitting down, and argued about produce the way other people argue about football.' },
+      { t:'pair', src:'assets/parma-church.webp', caption:'A church we walked into, on the way to somewhere else',
+        src2:'assets/parma-chefs.webp', caption2:'With chef Sergi Arola. Our side took the tagliatelle round' },
+      { t:'text', text:'The tagliatelle competition was meant to be a warm-up exercise. Put a room of executive chefs in front of a sheet of pasta and nothing is a warm-up exercise. It got serious quickly, and it was the best hour of the week.' },
+
+      { t:'head', idx:'02 /', title:'A week of producers' },
+      { t:'text', text:'Barilla first, because scale is its own kind of craft and you cannot argue with the arithmetic of it. Then the opposite end of the scale, where one family does one thing and has done it for four generations. Both are worth studying. I have spent my career in rooms that have to be both at once.' },
+      { t:'pair', src:'assets/parma-barilla.webp', caption:'Pedrignano · the plant from the road',
+        src2:'assets/parma-parmigiano.webp', caption2:'In the ageing room, where you stop talking for a minute' },
+      { t:'text', text:'You read the numbers on a parmigiano wheel and you understand that someone made a decision two years ago and has been waiting ever since. There is no shortcut in that room. The whole building is a bet on patience.' },
+      { t:'pair', src:'assets/parma-culatello.webp', caption:'The culatello cellar · damp, dark, deliberate',
+        src2:'assets/parma-cellar.webp', caption2:'Down in the cellar with the group' },
+      { t:'text', text:'The culatello cellar was the one that got me. Cool and damp by design, the fog off the river doing the work, every piece tagged with the name of whoever is waiting for it. Restaurants in Gstaad, private buyers, names written by hand on a scrap of wood. Nothing about it is efficient and that is exactly the point.' },
+      { t:'pair', src:'assets/parma-acetaia.webp', caption:'The acetaia · barrels getting smaller as the years go by',
+        src2:'assets/parma-sunset.webp', caption2:'Emilia at the end of the day' },
+      { t:'quote', text:'Every good thing here was made by someone who agreed to wait longer than seemed reasonable.' },
+
+      { t:'head', idx:'03 /', title:'Modena', place:'A detour with a garage attached' },
+      { t:'text', text:'Modena for the balsamic, which is a lesson in decanting and time and not much else, and then, unexpectedly, for cars. A private collection that had nothing to do with food and everything to do with the same instinct: find one thing, understand it completely, keep the good ones.' },
+      { t:'wide', src:'assets/parma-pantera.webp', caption:'Not what I came to Modena for, and my favourite thing I saw' },
+
+      { t:'head', idx:'04 /', title:'Torino', place:'Coffee, vermouth, arcades' },
+      { t:'text', text:'North to Torino, a city that behaves like a capital because it used to be one. Arcades you can cross the whole centre under, cafés with a hundred years of the same ritual, and a seriousness about bitter drinks that I respect enormously.' },
+      { t:'wide', src:'assets/parma-caffetorino.webp', caption:'Under the porticoes · Caffè Torino, late afternoon' },
+      { t:'pair', src:'assets/parma-lavazza.webp', caption:'Lavazza · the machines they started with',
+        src2:'assets/parma-flavourwheel.webp', caption2:'The flavour wheel, which I have argued with for years' },
+      { t:'text', text:'The coffee tasting was the most humbling hour of the trip. I have ordered coffee my entire adult life and I could not reliably name what I was drinking. Good. That is the useful feeling. You go home and you taste more carefully for a month.' },
+      { t:'pair', src:'assets/parma-galleria.webp', caption:'Galleria Subalpina · glass, iron, ferns',
+        src2:'assets/parma-vermouth.webp', caption2:'Vermouth, botanicals laid out like evidence' },
+
+      { t:'head', idx:'05 /', title:'The long way home', place:'Lago di Como' },
+      { t:'text', text:'When the group broke up I stayed. I had a bike and a week and one of the best places in the world to use both. Como is a lake with mountains dropped straight into it, which means there is no flat road anywhere, which is the whole appeal.' },
+      { t:'wide', src:'assets/parma-como-pano.webp', caption:'Above the lake, early, before the traffic' },
+      { t:'pair', src:'assets/parma-bellagio.webp', caption:'Bellagio side · cypress, terraces, water',
+        src2:'assets/parma-como-dock.webp', caption2:'A dock, a boat, nowhere to be' },
+      { t:'text', text:'I rode up to the Madonna del Ghisallo, the chapel at the top of the climb that cyclists treat as a shrine, because it is one. Bikes on the walls, jerseys, photographs of men who suffered on these roads long before any of us did. You get to the top and you are quiet for a bit, and then you eat.' },
+      { t:'pair', src:'assets/parma-ghisallo.webp', caption:'Ghisallo · the climb, and the monument at the top',
+        src2:'assets/parma-pizza.webp', caption2:'The reward. No notes' },
+      { t:'outro', text:'I came back with a notebook full of producers and a pair of legs that remembered what climbing feels like. The food part of this job takes you to the source if you let it. The rest of the trip is what you make of the days either side.',
+        aside:'Ten days in Italy, and the bicycle did the editing.' },
+    ] },
   { id:'phuket', idx:'—', name:'Phuket', country:'Thailand', lat:7.88, lon:98.39, type:'post',
     postKicker:'Field note', postReadout:'Phuket, Thailand',
     postTitle:'Phuket', postDek:'More photos and stories coming soon.' },
@@ -1373,7 +1472,22 @@ class Component extends DCLogic {
       isAbout: phase==='about',
       isPost: phase==='post',
       isTokyoPost: phase==='post' && ac && ac.id==='tokyo',
-      isOtherPost: phase==='post' && ac && ac.id!=='tokyo',
+      isStubPost: phase==='post' && ac && ac.id!=='tokyo' && !(ac.blocks && ac.blocks.length),
+      postHero: phase==='post' && ac && ac.postHero ? this.resolveAsset(ac.postHero) : null,
+      heroStyle: phase==='post' && ac && ac.postHero ? {
+        position:'absolute', inset:0,
+        backgroundImage:'url('+this.resolveAsset(ac.postHero)+')',
+        backgroundSize:'cover', backgroundPosition:'center '+(ac.postHeroPos||'35%'),
+      } : null,
+      postBlocks: phase==='post' && ac && ac.blocks ? ac.blocks.map(b => ({
+        isHead: b.t==='head', isText: b.t==='text', isWide: b.t==='wide',
+        isPair: b.t==='pair', isQuote: b.t==='quote', isOutro: b.t==='outro',
+        idx: b.idx, title: b.title, place: b.place || null,
+        text: b.text, aside: b.aside,
+        src: b.src ? this.resolveAsset(b.src) : null,
+        src2: b.src2 ? this.resolveAsset(b.src2) : null,
+        caption: b.caption, caption2: b.caption2,
+      })) : [],
       showBack: phase==='city',
       backLabel: 'Orbit',
       backAction: this.backToOrbit,
