@@ -100,14 +100,15 @@
     <!-- CITY CARD -->
     <sc-if value="{{ isCity }}" hint-placeholder-val="{{ false }}">
     <div class="mh-citywrap" style="position:absolute;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:flex-end;padding:min(9vw,120px);padding-top:max(min(9vw,120px),96px);background:radial-gradient(90% 80% at 62% 50%,rgba(8,6,4,.35),rgba(8,6,4,.78))">
-      <div class="mh-citycard om-scroll" style="position:relative;width:min(480px,90vw);max-height:min(84vh,720px);overflow-y:auto;background:#F4F1EA;color:#171513;padding:30px 34px 26px;box-shadow:0 40px 90px -30px rgba(0,0,0,.75);{{ cardRevealStyle }}">
+      <div class="mh-citycard om-scroll" style="position:relative;width:min(480px,90vw);max-height:min(84vh,720px);overflow-y:auto;background:#F4F1EA;color:#171513;padding:38px 34px 26px;box-shadow:0 40px 90px -30px rgba(0,0,0,.75);{{ cardRevealStyle }}">
         <div style="position:absolute;top:0;left:34px;right:34px;height:3px;background:#C63D21"></div>
-        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#8A8378">{{ activeCity.idx }} / {{ activeCity.country }}</div>
-        <h2 style="font-family:'Fraunces',serif;font-weight:600;font-size:clamp(40px,6vw,62px);line-height:.98;margin:10px 0 4px;cursor:pointer" onClick="{{ openContent }}">{{ activeCity.name }}</h2>
+        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#8A8378;margin-top:4px">{{ activeCity.idx }} / {{ activeCity.country }}</div>
+        <h2 style="font-family:'Fraunces',serif;font-weight:600;font-size:clamp(40px,6vw,62px);line-height:1.08;margin:10px 0 4px;cursor:pointer" onClick="{{ openContent }}">{{ activeCity.name }}</h2>
         <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#171513;margin-bottom:20px">{{ activeCity.years }} · {{ activeCity.role }}</div>
         <sc-if value="{{ hasCardImg }}" hint-placeholder-val="{{ false }}">
           <div onClick="{{ openContent }}" style="position:relative;margin:0 0 22px;cursor:pointer;padding:10px 10px 0;background:#fff;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);transform:rotate(-1.1deg)">
             {{ cardImgEl }}
+            <!-- imgH/imgPos on the city record control crop; raise imgH or shift imgPos when faces get cut off -->
             <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8A8378;padding:7px 2px 8px">{{ activeCity.caption }}</div>
           </div>
         </sc-if>
@@ -140,7 +141,7 @@
           <div class="mh-name-text" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#171513">Miguel Huelamo</div>
         </div>
         <nav class="mh-nav" style="display:flex;gap:26px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#8A8378;justify-self:center">
-          <a href="#portfolio">Portfolio</a><a href="#table">Recipes</a><a href="#notes">Discovering</a>
+          <a href="#portfolio">Portfolio</a><a href="#notes">Discovering</a><a href="#table">Recipes</a>
         </nav>
         <div onClick="{{ backToMenu }}" style="cursor:pointer;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C63D21;justify-self:end;white-space:nowrap">
           <span class="mh-name-text">↑ Back to menu</span><span class="mh-back-short">↑ Menu</span>
@@ -159,12 +160,17 @@
       </section>
 
       <section id="portfolio" style="max-width:1080px;margin:0 auto;padding:20px clamp(24px,5vw,64px) 30px">
-        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8A8378;margin-bottom:22px">02 / Portfolio</div>
+        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8A8378;margin-bottom:22px">01 / Portfolio</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
           <sc-for list="{{ plates }}" as="p" hint-placeholder-count="3">
             <figure style="margin:0">
               <div style="position:relative;aspect-ratio:4/5;background:{{ p.bg }};overflow:hidden;border:.5px solid rgba(138,131,120,.3)">
-                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#8A8378">Archive image</div>
+                <sc-if value="{{ p.img }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ p.img }}" alt="{{ p.cap }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:{{ p.imgPos }}" loading="lazy" decoding="async">
+                </sc-if>
+                <sc-if value="{{ p.placeholder }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#8A8378">Archive image</div>
+                </sc-if>
               </div>
               <figcaption style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A8378;margin-top:10px">{{ p.cap }}</figcaption>
             </figure>
@@ -173,17 +179,25 @@
       </section>
 
       <section id="notes" style="max-width:760px;margin:0 auto;padding:46px clamp(24px,5vw,64px) 40px">
-        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8A8378;margin-bottom:26px">03 / Discovering</div>
+        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8A8378;margin-bottom:26px">02 / Discovering</div>
+        <sc-for list="{{ activeCity.discoverPosts }}" as="post" hint-placeholder-count="2">
         <article style="border-top:.5px solid rgba(138,131,120,.4);padding-top:22px;margin-bottom:36px">
-          <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C63D21;margin-bottom:10px">On beginnings</div>
-          <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.15;margin-bottom:12px">{{ activeCity.note1title }}</h3>
-          <p style="font-size:17px;line-height:1.66;color:#2a2724">{{ activeCity.note1 }}</p>
+          <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C63D21;margin-bottom:10px">{{ post.label }}</div>
+          <h3 style="font-family:'Fraunces',serif;font-weight:{{ post.titleWeight }};font-size:26px;line-height:1.15;margin-bottom:12px;color:{{ post.titleColor }}">{{ post.title }}</h3>
+          <p style="font-size:17px;line-height:1.66;color:#2a2724;white-space:pre-line">{{ post.text }}</p>
         </article>
-        <article style="border-top:.5px solid rgba(138,131,120,.4);padding-top:22px">
-          <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C63D21;margin-bottom:10px">From the table</div>
-          <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.15;margin-bottom:12px">{{ activeCity.note2title }}</h3>
-          <p style="font-size:17px;line-height:1.66;color:#2a2724">{{ activeCity.note2 }}</p>
+        </sc-for>
+      </section>
+
+      <section id="table" style="max-width:760px;margin:0 auto;padding:0 clamp(24px,5vw,64px) 46px">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8A8378;margin-bottom:26px;border-top:.5px solid rgba(138,131,120,.4);padding-top:40px">03 / From the table</div>
+        <sc-for list="{{ activeCity.recipes }}" as="recipe" hint-placeholder-count="2">
+        <article style="border-top:.5px solid rgba(138,131,120,.4);padding-top:22px;margin-bottom:36px">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C63D21;margin-bottom:10px">Recipe</div>
+          <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.15;margin-bottom:12px">{{ recipe.title }}</h3>
+          <p style="font-size:17px;line-height:1.66;color:#2a2724">{{ recipe.text }}</p>
         </article>
+        </sc-for>
       </section>
 
       <footer style="border-top:.5px solid rgba(138,131,120,.4);margin:40px clamp(24px,5vw,64px) 0;padding:28px 0 60px;max-width:1080px;margin-left:auto;margin-right:auto;display:flex;justify-content:center;align-items:center">
@@ -924,82 +938,90 @@ const DEG = Math.PI / 180;
 const CITIES = [
   { id:'madrid', idx:'2.1', name:'Madrid', country:'España', years:'2001–03 · 2020–21', lat:40.4, lon:-3.7, hero:true, x:44, y:38,
     role:'Where it began, where I paused for the 1st time', place:'El Mentidero de la Villa',
-    cityBg:'assets/madrid.jpg', bgPos:'center 52%', img:'assets/nietos.jpg', caption:'My Abuela with the grandchildren',
-    aside:'Two years without pay. Everything to learn.',
-    blurb:'Biology at Complutense University, or so I thought after high school. The real path was found at El Mentidero de la Villa, in the kitchen with Mundi and Quique, where I figured out academia was not where I was headed.',
-    note1title:'The unpaid years', note1:'I traded wages for repetition. Peeling, portioning, plating the same dish until my hands stopped thinking. It was the cheapest and most expensive education I ever bought.',
-    note2title:'Cocido, on a Monday', note2:'The dish that taught me patience is a stew that asks for none of your cleverness, only your time. Madrid gave me the long fire before it gave me anything fast.' },
+    cityBg:'assets/madrid.jpg', bgPos:'center 52%', img:'assets/nietos.jpg', imgH:210, imgPos:'center 55%', caption:'My Abuela with the grandchildren',
+    aside:'Where I was born, where my culinary journey started. Where I sought refuge during that crazy 2020.',
+    blurb:'My city, born and raised here. Amazing, lively city but since little I dreamt about other places and I have been lucky enough to follow my dreams. I always return and still has a special place in my heart.',
+    portfolio:[
+      {img:'assets/madrid-churros.jpg', imgPos:'center 35%', cap:'Porras & churros, San Ginés'},
+      {img:'assets/madrid-snow.jpg', imgPos:'center 40%', cap:'Epic snowstorm during COVID'},
+      {img:'assets/madrid-highschool.jpg', imgPos:'center 30%', cap:'Last year of high school'},
+    ],
+    discoverPosts:[
+      {label:'On beginnings', title:'Into the kitchen', text:'I was born into the first generation of Spaniards who didn\'t have to know the dictatorship firsthand, only its aftertaste. My parents\' generation had mostly arrived in Madrid from somewhere else, one province or another, chasing the city as the country rebuilt itself after the civil war. Everyone I grew up around was Spanish. I mean that almost literally: the first time I saw someone that wasn\'t your average Spanish person was on the metro, probably late 1980s or so. I still remember it. Madrid was that closed a place, that recently emerged. In the 90s it all changed, and the city grew so rich in contrasts with lots of South Americans, Romanians, Moroccans and many other nationalities.\n\nI went to a good school after a not so good experience with a Catholic school where they didn\'t want you to think, just memorize. In the Agora school I made great friends, people I still see every time I\'m back. I was never a sports kid. Books were the thing for me, and then some. Lord of the Rings, Dungeons & Dragons type role playing games, whatever computer game would run on what we had at home, and science fiction by the shelf: Dune, Asimov, Neal Stephenson once I got old enough to find him. Somewhere in there I decided the brain was the most interesting machine on the planet, which in hindsight explains a lot about how I ended up running kitchens.\n\nThat fascination sent me to Complutense to study Biology, Ethology specifically, the study of behavior. I liked it but I didn\'t see an exit from it. Three years in, I had nothing to show for it and no profession, which is its own kind of vertigo when everyone around you seems to know where they\'re headed.\n\nThen, by pure chance, thanks to a friend of my father I got the chance to spend a night in a professional kitchen. El Mentidero de la Villa, a small market-driven restaurant tucked near the Senate and the Stock Exchange in the Old Madrid, run by Jose Ynglada, Mundi to everyone who knew him. He had Quique Rodríguez in there with him, fresh out of culinary school. I walked in for one shift and never fully walked back out.\n\nWhat got me wasn\'t the food, not at first. It was the rhythm. Hours of mise en place with the radio on, talking nonsense, working with your hands until your hands stopped needing your brain\'s permission to move. Family meal with the whole team before service. The switch that flips the second the first ticket comes in, everyone suddenly serious, suddenly precise. Juggling four dishes with four different cook times so they all land on the pass in the same second. It\'s a specific kind of addiction, and I caught it in one night.\n\nThat was also the year I first read Anthony Bourdain. Between the kitchen and the book, the biology degree didn\'t stand a chance.'},
+      {label:'The gap year', title:'COVID.', accent:true, text:'COVID caught us in Hong Kong, mid-momentum. New restaurants had just opened, everything moving the way it\'s supposed to when a launch goes right, and then the world shut its doors and none of that mattered anymore. Madrid was where we went to wait. We didn\'t know it would be for a year.\n\nMy daughter started preschool in my old neighborhood, the same streets I\'d grown up on. My son said his first words there too, in Spanish, and became so chatty, when I see videos now it\'s so adorable. I moved back into my parents\' house after twenty years away, except this time I brought a wife and two kids with me, the old room was not built for four extra people and it was a very different life than the one I\'d left it with.\n\nIt was hard. Everyone we knew was scared and we didn\'t know what the future would be for us. We watched the news obsessively like everyone else. We got hit. We didn\'t lose anyone but the fear was real.\n\nA year of waiting for a kitchen door to open somewhere. A year of being, for the first time in two decades, just a son, a husband, a father, with no service to run and no pass to manage. I didn\'t know what to do with the stillness at first. I\'m still not sure I fully figured it out. But it was a year that left us with some crazy moments and memories, with some scars and new fears.'},
+    ],
+    recipes:[{title:'Cocido, on a Monday', text:'The dish that taught me patience is a stew that asks for none of your cleverness, only your time. Madrid gave me the long fire before it gave me anything fast.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'sansebastian', idx:'2.2', name:'San Sebastián', country:'España', years:'2004–06', lat:43.3, lon:-2.0, x:44.6, y:35.4,
     role:'Escuela Luis Irizar', place:'Escuela Luis Irizar',
     cityBg:'assets/sansebastian.jpg', bgPos:'center', img:'assets/arantzabi-amasa.jpg', caption:'Arantzabi, Amasa. Working with great authentic people is a reward of this job.',
     aside:'The grammar of the kitchen, and a bicycle.',
     blurb:'Donosti was my first life outside Madrid. Two years cooking in the city had convinced me I wanted to do this properly, and Escuela Irizar was the best school I could find. Euskadi gave me something else too: road cycling, a love that has never left.',
-    note1title:'Pintxos as precision', note1:'Small plates leave nowhere to hide. San Sebastián taught me that scale is not the measure of ambition.',
-    note2title:'First climbs', note2:'The hills above the city were my first mountains. I did not know yet how far they would carry me.' },
+    discoverPosts:[{label:'On beginnings', title:'Pintxos as precision', text:'Small plates leave nowhere to hide. San Sebastián taught me that scale is not the measure of ambition.'}],
+    recipes:[{title:'First climbs', text:'The hills above the city were my first mountains. I did not know yet how far they would carry me.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'taipei', idx:'2.3', name:'Taipei', country:'Taiwan', years:'2006–08', lat:25.0, lon:121.5, x:82.6, y:41.8,
     role:'Head Chef · Cosi o Cosi', place:'Cosi o Cosi',
     cityBg:'assets/taipei.jpg', bgPos:'center 75%', img:'assets/taipei-7eleven.jpg', imgH:230,
     caption:'I was so in love with the 红油抄手 here... My first media appearence was in 7Eleven magazine.',
     aside:'We built the tapas bar with our own hands.',
     blurb:'Robin Tsai loved Spain and wanted tapas on his menu, so he picked me fresh out of Irizar and put me on a plane to Taipei, and it was love at first sight. It is still my favourite city in the world, still full of friends I made in those years, and still the closest thing to paradise for anyone who eats for a living.',
-    note1title:'Building a room', note1:'Before the first plate, there were the walls. A restaurant you build yourself teaches you what a restaurant is.',
-    note2title:'North Taiwan by bike', note2:'The coast road out of Taipei is where Asia stopped being a posting and started being home.' },
+    discoverPosts:[{label:'On beginnings', title:'Building a room', text:'Before the first plate, there were the walls. A restaurant you build yourself teaches you what a restaurant is.'}],
+    recipes:[{title:'North Taiwan by bike', text:'The coast road out of Taipei is where Asia stopped being a posting and started being home.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'shanghai', idx:'2.4', name:'Shanghai', country:'China', years:'2008–11', lat:31.2, lon:121.5, x:80.6, y:38,
     role:'Executive Chef · Les Suites Orient', place:'Les Suites Orient',
     cityBg:'assets/shanghai.jpg', bgFit:'width', bgPosY:'15%', img:'assets/shanghai-street.jpg', imgH:240,
     caption:'Shanghai 2008 was the wild wild east...',
     aside:'A first triathlon, a first opening of my own.',
     blurb:'Shanghai was my first pre-opening. My first hotel. It was also where the Ironman started. After my first Olympic distance in Vietnam, I was hooked. The cycling community in Shanghai was extraordinary, and the first year gave me time to explore, travelling to races in remote corners of China and across Asia.',
-    note1title:'Opening night', note1:'An opening is chaos rehearsed until it looks like calm. Shanghai taught me the rehearsal.',
-    note2title:'Endurance', note2:'The half Ironman and the double service are the same skill: pace, fuel, refuse to stop.' },
+    discoverPosts:[{label:'On beginnings', title:'Opening night', text:'An opening is chaos rehearsed until it looks like calm. Shanghai taught me the rehearsal.'}],
+    recipes:[{title:'Endurance', text:'The half Ironman and the double service are the same skill: pace, fuel, refuse to stop.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'hongkong', idx:'2.5', name:'Hong Kong', country:'China', years:'2011–13 · Zuma', lat:22.3, lon:114.2, x:79.4, y:44,
     role:'2019–20 · Pirata Group', place:'Zuma · Honjo · TMK',
     cityBg:'assets/hongkong.jpg', bgPos:'center bottom', img:'assets/hongkong-zuma.jpg', imgH:240,
     caption:'Zuma HK is where I learned that consistency at scale is its own cuisine',
     aside:'A city I chose twice.',
     blurb:'First as Executive Sous Chef at Zuma, spanning Hong Kong, London and Miami, the years I crossed my first full Ironman line in Lanzarote. Then a return in 2019 as Executive Chef with the Pirata Group, creating Honjo and scaling TMK, until the pandemic sent the family to Madrid in 2020. Two stays, most of a decade apart, in the city that kept calling me back.',
-    note1title:'The pass at Zuma', note1:'Volume without slippage. Hong Kong is where I learned to run a section like a metronome, and where a full Ironman taught me the same lesson at a longer distance.',
-    note2title:'The return', note2:'Coming back to open Honjo and TMK with Pirata was a different Hong Kong and a different me. Then the world stopped, and we went home to wait it out.' },
+    discoverPosts:[{label:'On beginnings', title:'The pass at Zuma', text:'Volume without slippage. Hong Kong is where I learned to run a section like a metronome, and where a full Ironman taught me the same lesson at a longer distance.'}],
+    recipes:[{title:'The return', text:'Coming back to open Honjo and TMK with Pirata was a different Hong Kong and a different me. Then the world stopped, and we went home to wait it out.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'miami', idx:'2.6', name:'Miami', country:'USA', years:'2011', lat:25.8, lon:-80.2, x:26.4, y:42,
     role:'The interlude', place:'Miami',
     cityBg:'assets/miami.jpg', bgPos:'center 20%', img:'assets/miami-jj.jpg', imgH:225,
     caption:'Best birthday present ever, the person that changed my life forever.',
     aside:'The most important thing that ever happened at a table.',
     blurb:'Miami lasted one month. Full shifts, real service, the kind of trial that was supposed to tell me whether the posting made sense. It told me something else. I met JJ that month, and by the time I left, the job mattered less than the reason to come back. Every move since has stopped being a decision I make alone.',
-    note1title:'An interlude', note1:'Not every chapter is about work. This one changed the shape of all the others.',
-    note2title:'Warm water', note2:'A pause between two hemispheres, exactly long enough.' },
+    discoverPosts:[{label:'On beginnings', title:'An interlude', text:'Not every chapter is about work. This one changed the shape of all the others.'}],
+    recipes:[{title:'Warm water', text:'A pause between two hemispheres, exactly long enough.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'london', idx:'2.7', name:'London', country:'United Kingdom', years:'2011–13', lat:51.5, lon:-0.1, x:46, y:31,
     role:'Zuma · Executive Sous Chef', place:'Zuma',
     cityBg:'assets/london.jpg', bgPos:'center', img:'assets/london-shard-view.jpg', imgH:260,
     caption:'The kitchen in Oblix at The Shard had the best London views',
     aside:'The Japanese grammar, at full volume.',
     blurb:"London was supposed to be a one-year stop before Miami. Zuma based first, the same pace and precision that ran across Hong Kong and Miami too. Then I joined the opening team at Oblix, and the year filled up fast. The cycling was wet, interesting but not fun. I never fell in love with the city, if I'm honest.",
-    note1title:'Three continents, one brand', note1:'Zuma taught me that a standard is only real if it survives the flight. The discipline is the same in every time zone; only the view changes.',
-    note2title:'London pace', note2:'The fastest room I had run to that point. It made the next ones feel possible.' },
+    discoverPosts:[{label:'On beginnings', title:'Three continents, one brand', text:'Zuma taught me that a standard is only real if it survives the flight. The discipline is the same in every time zone; only the view changes.'}],
+    recipes:[{title:'London pace', text:'The fastest room I had run to that point. It made the next ones feel possible.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'athens', idx:'2.8', name:'Athens', country:'Greece', years:'2013–14', lat:38.0, lon:23.7, x:54.4, y:39.4,
     role:'With JJ', place:'Athens',
     cityBg:'assets/athens.jpg', bgPos:'center 40%', img:'assets/meteora.jpg',
     caption:'Meteora, one of many trips in Greece',
     aside:'We married here.',
     blurb:'Athens is where I got married. We spent a little over a year there, the first year of building a life together instead of just following a job. Honest work, nothing that needs an applause, a new concept to open and some Zuma habits worth implementing. I loved the country. I loved the people more. Everything before this was solo travel. This was the first stop that was ours from the start.',
-    note1title:'A Greek year', note1:'Longer days, older stones, a different clock. Athens taught me a gentler tempo.',
-    note2title:'The wedding', note2:'Between two postings, a life. We married under Attic light and kept moving.' },
+    discoverPosts:[{label:'On beginnings', title:'A Greek year', text:'Longer days, older stones, a different clock. Athens taught me a gentler tempo.'}],
+    recipes:[{title:'The wedding', text:'Between two postings, a life. We married under Attic light and kept moving.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'kualalumpur', idx:'2.9', name:'Kuala Lumpur', country:'Malaysia', years:'2014–16', lat:3.1, lon:101.7, x:76.5, y:54,
     role:'Group Executive Chef · Out2Dine', place:'Out2Dine',
     cityBg:'assets/kualalumpur.jpg', bgPos:'center 60%', img:'assets/nasi-lemak-kl-v2.jpg',
     caption:'Malaysia has one of the most interesting mix of food cultures in the world',
     aside:'Our daughter was born here.',
     blurb:'Group Executive Chef across several concepts with Out2Dine, spanning European fine dining, Italian, Japanese izakaya and German venues, where I built a central production kitchen and standardised quality across outlets. It is also the city where our daughter was born. The years that turned a couple into a family and a chef into an operator.',
-    note1title:'From one kitchen to many', note1:'Operations is cooking at a distance: you season through people. Kuala Lumpur taught me to lead, not just to cook.',
-    note2title:'A daughter', note2:'The map acquired its most important coordinate here, and it does not appear on any chart.' },
+    discoverPosts:[{label:'On beginnings', title:'From one kitchen to many', text:'Operations is cooking at a distance: you season through people. Kuala Lumpur taught me to lead, not just to cook.'}],
+    recipes:[{title:'A daughter', text:'The map acquired its most important coordinate here, and it does not appear on any chart.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'dubai', idx:'2.10', name:'Dubai', country:'United Arab Emirates', years:'2016–19 · Renaissance', lat:25.2, lon:55.3, x:62, y:43,
     role:'2021–present · JW Marriott Marquis', place:'Morimoto · JW Marriott Marquis',
     cityBg:'assets/dubai.jpg', bgPos:'center 38%', img:'assets/prime68-award.jpg', imgPos:'center 20%',
     caption:'3rd year in a row, Prime 68 won Best Steakhouse by Time Out Awards',
     aside:'The desert, chosen twice.',
     blurb:'First from 2016 as Executive Chef at Morimoto Dubai, Renaissance Downtown Hotel, leading a 46-chef brigade alongside the Morimoto corporate team. Then a return in 2021 as Executive Chef of the JW Marriott Marquis, one of the world\'s largest luxury hotels, with sixteen venues and a brigade of three hundred. The present tense of a long journey, in a city that builds fast and rewards those who build with it.',
-    note1title:'Building in the desert', note1:'Dubai rewards the operator who can open and hold at once. The Morimoto years were pure craft; the years since are the sum of every room that came before.',
-    note2title:'Present tense', note2:'The journey has not stopped; it has only found a longer runway. The next coordinate is not yet lit.' },
+    discoverPosts:[{label:'On beginnings', title:'Building in the desert', text:'Dubai rewards the operator who can open and hold at once. The Morimoto years were pure craft; the years since are the sum of every room that came before.'}],
+    recipes:[{title:'Present tense', text:'The journey has not stopped; it has only found a longer runway. The next coordinate is not yet lit.'}, {title:'Second recipe — placeholder', text:'Recipe details coming soon.'}] },
   { id:'tokyo', idx:'—', name:'Tokyo', country:'Japan', lat:35.68, lon:139.76, x:84, y:39, type:'post',
     postKicker:'Field note', postDate:'March 2023', postReadout:'Tokyo, Japan',
     postTitle:'Three Times, Tokyo Always',
@@ -1602,11 +1624,12 @@ class Component extends DCLogic {
 
   renderVals() {
     const s = this.state, phase = s.phase;
-    const ac = s.activeCity;
-    const plates = [
-      { bg:'#e3ded4', cap:`${ac.name} · plate 01` },
-      { bg:'#171513', cap:`${ac.name} · plate 02` },
-      { bg:'#8a8378', cap:`${ac.name} · plate 03` },
+    const ac0 = s.activeCity;
+    const ac = ac0 ? { ...ac0, discoverPosts: (ac0.discoverPosts || []).map(p => ({ ...p, titleColor: '#171513', titleWeight: p.accent ? 700 : 600 })) } : ac0;
+    const plates = (ac.portfolio && ac.portfolio.length) ? ac.portfolio.map(p => ({ ...p, placeholder:false })) : [
+      { bg:'#e3ded4', cap:`${ac.name} · plate 01`, placeholder:true },
+      { bg:'#171513', cap:`${ac.name} · plate 02`, placeholder:true },
+      { bg:'#8a8378', cap:`${ac.name} · plate 03`, placeholder:true },
     ];
 
     const isMobileNow = window.innerWidth <= 600;
